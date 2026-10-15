@@ -187,12 +187,33 @@
 }
 
 /* Broadsheet hairline and column dividers */
-.broadsheet-hairline {
-  border-color: #e4e2e2;
-}
-
 .broadsheet-rule-double {
   border-top: 1px solid #1b1c1c;
   border-bottom: 1px solid #1b1c1c;
   height: 5px;
 }
+
+.broadsheet-hairline {
+  border-color: #e4e2e2;
+}
+
+.broadsheet-grid-divider {
+  border-color: #dbdad9;
+}
+
+/* Tabular figures for financial tables and tickers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Print finishing */
+@media print {
+  header, footer, nav, button {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+

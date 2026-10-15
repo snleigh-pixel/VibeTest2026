@@ -9,6 +9,7 @@ import { SearchModal } from './components/SearchModal';
 import { SectionsModal } from './components/SectionsModal';
 import { SavedArticlesModal } from './components/SavedArticlesModal';
 import { SubscriptionModal } from './components/SubscriptionModal';
+import { ArchiveModal } from './components/ArchiveModal';
 import { ARTICLES, LIVE_UPDATES } from './data/newsData';
 import { SectionType } from './types/news';
 
@@ -17,6 +18,7 @@ export default function App() {
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [currentSection, setCurrentSection] = useState<SectionType>('all');
   const [currentEdition, setCurrentEdition] = useState<string>('us');
+  const [currentDateStr, setCurrentDateStr] = useState<string>('Wednesday, October 24, 2024');
 
   // Modals
   const [isLiveUpdatesOpen, setIsLiveUpdatesOpen] = useState(false);
@@ -26,6 +28,7 @@ export default function App() {
   const [isSectionsOpen, setIsSectionsOpen] = useState(false);
   const [isSavedArticlesOpen, setIsSavedArticlesOpen] = useState(false);
   const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
+  const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
   // Bookmarking / Saved Articles
   const [savedArticleIds, setSavedArticleIds] = useState<string[]>(() => {
@@ -54,7 +57,7 @@ export default function App() {
       try {
         localStorage.setItem('nyt_saved_articles', JSON.stringify(next));
       } catch {
-        // ignore local storage restrictions
+        // ignore storage restrictions
       }
       showToast(exists ? 'Removed from saved articles.' : 'Saved to your reading list.');
       return next;
@@ -94,14 +97,14 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-[#fbf9f8] text-[#1b1c1c] selection:bg-[#1b1c1c] selection:text-white">
       {/* Toast Notification Banner */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#1b1c1c] text-white px-4 py-2.5 shadow-2xl border-l-4 border-[#b52602] flex items-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <span className="material-symbols-outlined text-[18px] text-[#b52602]">info</span>
-          <span className="font-kicker text-xs uppercase tracking-wide font-bold">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#1b1c1c] text-white px-4 py-3 shadow-2xl border-l-4 border-[#b52602] flex items-center gap-3 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <span className="material-symbols-outlined text-[19px] text-[#b52602]">info</span>
+          <span className="font-kicker text-xs uppercase tracking-wider font-extrabold">
             {toastMessage}
           </span>
           <button
             onClick={() => setToastMessage(null)}
-            className="text-[#747878] hover:text-white"
+            className="text-[#747878] hover:text-white ml-2"
           >
             <span className="material-symbols-outlined text-[16px]">close</span>
           </button>
@@ -123,6 +126,8 @@ export default function App() {
           showToast(`Switched edition to ${ed.toUpperCase()}`);
         }}
         onOpenSubscriptionModal={() => setIsSubscriptionOpen(true)}
+        currentDateStr={currentDateStr}
+        onSelectDate={() => setIsArchiveOpen(true)}
       />
 
       {/* Screen View Switching */}
@@ -207,6 +212,16 @@ export default function App() {
         isOpen={isSubscriptionOpen}
         onClose={() => setIsSubscriptionOpen(false)}
         onShowToast={showToast}
+      />
+
+      <ArchiveModal
+        isOpen={isArchiveOpen}
+        onClose={() => setIsArchiveOpen(false)}
+        currentDateStr={currentDateStr}
+        onSelectDateStr={(date) => {
+          setCurrentDateStr(date);
+          showToast(`Switched paper edition to ${date}`);
+        }}
       />
     </div>
   );
